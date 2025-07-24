@@ -11,10 +11,6 @@ SELECT Country, City, CompanyName, ContactName, Phone
 FROM Customers
 WHERE Region IN ('WA', 'WY');
 
-SELECT Country, City, CompanyName, ContactName, Phone
-FROM Customers
-WHERE Region IN ('WA', 'WY');
-
 SELECT *
 FROM Products
 WHERE (CategoryID = 1 AND UnitPrice < 20)
