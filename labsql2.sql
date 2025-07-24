@@ -13,12 +13,12 @@ WHERE Region IN ('WA', 'WY');
 
 SELECT *
 FROM Products
-WHERE (CategoryID = 1 AND UnitPrice < 20)
+WHERE (CategoryID = 1 AND UnitPrice <= 20)
    OR (CategoryID = 8 AND UnitPrice >= 150);
 
-SELECT *
+SELECT CompanyName
 FROM Customers
-WHERE Country = 'USA' AND Fax IS NULL
+WHERE Fax IS NULL
 ORDER BY CompanyName;
 
 SELECT *
