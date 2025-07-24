@@ -4,8 +4,8 @@ WHERE Country = 'USA';
 
 SELECT *
 FROM Products
-WHERE CategoryID IN (1, 2, 4, 8)
-  AND UnitPrice BETWEEN 100 AND 200;
+WHERE CategoryID in (1, 2, 4, 8)
+  and UnitPrice BETWEEN 50 AND 100;
 
 SELECT Country, City, CompanyName, ContactName, Phone
 FROM Customers
