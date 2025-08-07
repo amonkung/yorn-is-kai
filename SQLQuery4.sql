@@ -16,7 +16,7 @@ SELECT ProductID, UnitPrice FROM Products
 WHERE ProductName LIKE '%ยางลบ%';
 -- 6. หมายเลขใบเสร็จ วันที่ และ ราคารวม ของใบเสร็จที่ออกก่อนวันที่ 15 ก.พ.
 SELECT ReceiptID, ReceiptDate, TotalCash FROM Receipts
-WHERE ReceiptDate < '2025-02-15';
+WHERE ReceiptDate < '2013-02-15';
 -- 7. รหัสสินค้า ชื่อสินค้า ที่มีจำนวนคงเหลือตั้งแต่ 400 ขึ้นไป
 SELECT ProductID, ProductName FROM Products
 WHERE UnitsInStock >= 400;
