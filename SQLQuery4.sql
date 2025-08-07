@@ -7,7 +7,7 @@ SELECT * FROM Products
 WHERE UnitsInStock < 250;
 -- 3. รหัสสินคา ชื่อสินค้าที่เลิกจำหน่ายแล้ว
 SELECT ProductID, ProductName FROM Products
-WHERE Discontinued = 0;
+WHERE Discontinued = 1;
 -- 4. รหัสสินค้า ชื่อสินค้า ราคา ของสินค้าที่มีราคามากกว่า 100
 SELECT ProductID, ProductName, UnitPrice FROM Products
 WHERE UnitPrice > 100;
