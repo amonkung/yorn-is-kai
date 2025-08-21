@@ -52,6 +52,11 @@ from Employees e join Orders o on e.EmployeeID = o.EmployeeID
 join [Order Details] od on o.OrderID = od.OrderID
 join Products p on p.ProductID = od.ProductID 
 where e.FirstName = 'Nancy'
-order by ProductIDy) จำนวนที่ชายได้
-from products p join [Order Details] od on p.ProductID = od.ProductID
-group by p.ProductID, p.ProductName
+order by ProductID
+
+select distinct s.Country
+from Customers c join Orders o on c.CustomerID = c.CustomerID
+join [Order Details] od on o.OrderID = od.OrderID
+join products p on p.ProductID = od.ProductID
+join Suppliers s on s.SupplierID = p.SupplierID
+where c.CompanyName = 'Around the horn'
