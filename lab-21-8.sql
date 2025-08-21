@@ -33,3 +33,11 @@ select e.EmployeeID, FirstName , count(*) as [order]
 from Employees e join Orders o on e.EmployeeID = o.EmployeeID
 where year(orderdate) = 1998
 group by e.EmployeeID, FirstName
+
+Select Title From Employees
+Where FirstName = 'Nancy'
+
+Select *
+From Employees
+Where Title = (Select Title From Employees
+Where FirstName = 'Nancy')
