@@ -46,3 +46,12 @@ order by 2 desc
 select p.ProductID, p.ProductName, sum(Quantity) จำนวนที่ชายได้
 from products p join [Order Details] od on p.ProductID = od.ProductID
 group by p.ProductID, p.ProductName
+
+select distinct p.ProductID, p.ProductName
+from Employees e join Orders o on e.EmployeeID = o.EmployeeID
+join [Order Details] od on o.OrderID = od.OrderID
+join Products p on p.ProductID = od.ProductID 
+where e.FirstName = 'Nancy'
+order by ProductIDy) จำนวนที่ชายได้
+from products p join [Order Details] od on p.ProductID = od.ProductID
+group by p.ProductID, p.ProductName
