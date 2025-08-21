@@ -60,3 +60,16 @@ join [Order Details] od on o.OrderID = od.OrderID
 join products p on p.ProductID = od.ProductID
 join Suppliers s on s.SupplierID = p.SupplierID
 where c.CompanyName = 'Around the horn'
+
+select p.ProductID, p.ProductName, sum(Quantity) จำนวนที่ซื้อ
+from Customers c join Orders o on c.CustomerID = o.CustomerID
+join [Order Details] od on o.OrderID = od.OrderID
+join products p on p.ProductID = od.ProductID
+where c.CompanyName = 'Around the horn'
+group by p.ProductID, p.ProductName
+
+select o.OrderID, FirstName,
+round(sum(od.Quantity* od.UnitPrice * (1-Discount)),2) TotalCash
+from Orders o join Employees e on o.EmployeeID = e.EmployeeID
+join[Order Details] od on o.OrderID = od.OrderID
+group by o.OrderID, FirstName
