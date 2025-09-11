@@ -1,3 +1,4 @@
+--ชลรวัตร ทองอยู่เลิศ 67040233126
 Select * from Employees
 Select EmployeeID, FirstName, LastName From Employees
 Select * From Employees Where city = 'London'
@@ -22,4 +23,5 @@ SELECT productID, ProductName, UnitPrice From Products ORDER BY UnitPrice DESC
 SELECT productID, ProductName, UnitPrice From Products ORDER BY UnitPrice 
 SELECT top 10 ProductName, Unitprice, UnitsInStock  from Products order by UnitsInStock DESC
 SELECT CategoryID, ProductName, UnitPrice FROM Products ORDER BY CategoryID ASC, UnitPrice Desc
+
 SELECT CategoryID, ProductName, UnitPrice FROM Products ORDER BY CategoryID Desc, UnitPrice ASC
