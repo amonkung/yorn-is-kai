@@ -77,3 +77,8 @@ delete from Shippers
 
 where ShipperID = 78
 
+select emp.FirstName ชื่อพนังงาน, boss.EmployeeID,boss.FirstName ชื่อหัวหน้า
+from Employees emp left outer join Employees boss
+on emp.ReportsTo = boss.EmployeeID
+
+
