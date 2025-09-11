@@ -94,8 +94,49 @@ WHERE o.OrderDate >= '1996-12-01' AND o.OrderDate < '1997-01-01'
 GROUP BY p.ProductID, p.ProductName, c.CategoryName
 ORDER BY TotalSales DESC;
 -- 8.   จงแสดงหมายเลขใบสั่งซื้อ ชื่อบริษัทลูกค้า ที่อยู่ เมืองประเทศของลูกค้า ชื่อเต็มพนักงานผู้รับผิดชอบ ยอดรวมในแต่ละใบสั่งซื้อ จำนวนรายการสินค้าในใบสั่งซื้อ และเลือกแสดงเฉพาะที่จำนวนรายการในใบสั่งซื้อมากกว่า 2 รายการ
+SELECT
+o.OrderID,
+c.CompanyName AS CustomerCompany,
+c.Address,
+c.City,
+c.Country,
+e.FirstName + ' ' + e.LastName AS EmployeeName,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS OrderTotal,
+COUNT(od.ProductID) AS ItemCount
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Customers c ON o.CustomerID = c.CustomerID
+JOIN Employees e ON o.EmployeeID = e.EmployeeID
+GROUP BY o.OrderID, c.CompanyName, c.Address, c.City, c.Country, e.FirstName, e.LastName
+HAVING COUNT(od.ProductID) > 2
+ORDER BY o.OrderID;
 -- 9.   จงแสดง ชื่อบริษัทลูกค้า ชื่อผู้ติดต่อ เบอร์โทร เบอร์แฟกซ์ ยอดที่สั่งซื้อทั้งหมดในเดือน ธันวาคม 2539 แสดงผลเฉพาะลูกค้าที่มีเบอร์แฟกซ์
+SELECT
+c.CustomerID,
+c.CompanyName,
+c.ContactName,
+c.Phone,
+c.Fax,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS TotalPurchase
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Customers c ON o.CustomerID = c.CustomerID
+WHERE o.OrderDate >= '1996-12-01' AND o.OrderDate < '1997-01-01'
+AND c.Fax IS NOT NULL
+GROUP BY c.CustomerID, c.CompanyName, c.ContactName, c.Phone, c.Fax
+ORDER BY TotalPurchase DESC;
 -- 10.  จงแสดงชื่อเต็มพนักงาน จำนวนใบสั่งซื้อที่รับผิดชอบ ยอดขายรวมทั้งหมด เฉพาะในไตรมาสสุดท้ายของปี 2539 เรียงตามลำดับ มากไปน้อยและแสดงผลตัวเลขเป็นทศนิยม 4 ตำแหน่ง
+SELECT
+e.EmployeeID,
+e.FirstName + ' ' + e.LastName AS EmployeeName,
+COUNT(DISTINCT o.OrderID) AS OrderCount,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS TotalSales
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Employees e ON o.EmployeeID = e.EmployeeID
+WHERE o.OrderDate >= '1996-10-01' AND o.OrderDate < '1997-01-01'
+GROUP BY e.EmployeeID, e.FirstName, e.LastName
+ORDER BY TotalSales DESC;
 -- 11.  จงแสดงชื่อพนักงาน และแสดงยอดขายรวมทั้งหมด ของสินค้าที่เป็นประเภท Beverage ที่ส่งไปยังประเทศ ญี่ปุ่น
 -- 12.  แสดงรหัสบริษัทตัวแทนจำหน่าย ชื่อบริษัทตัวแทนจำหน่าย ชื่อผู้ติดต่อ เบอร์โทร ชื่อสินค้าที่ขาย เฉพาะประเภท Seafood ยอดรวมที่ขายได้แต่ละชนิด แสดงผลเป็นทศนิยม 4 ตำแหน่ง เรียงจาก มากไปน้อย 10 อันดับแรก
 -- 13.  จงแสดงชื่อเต็มพนักงานทุกคน วันเกิด อายุเป็นปีและเดือน พร้อมด้วยชื่อหัวหน้า
