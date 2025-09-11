@@ -1,3 +1,4 @@
+--ชลรวัตร ทองอยู่เลิศ 67040233126
 SELECT EmployeeID, TitleOfCourtesy, FirstName, LastName
 FROM Employees
 WHERE Country = 'USA';
