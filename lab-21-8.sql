@@ -1,4 +1,4 @@
-//ชลรวัตร ทองอยู่เลิศ 67040233126
+--ชลรวัตร ทองอยู่เลิศ 67040233126
 select c.CategoryName, p.ProductName, p.UnitPrice  
 from Products as p,Categories  as c
 where p.CategoryID=c.CategoryID
