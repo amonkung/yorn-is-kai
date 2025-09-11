@@ -1,10 +1,11 @@
+//ชลรวัตร ทองอยู่เลิศ 67040233126
 Select ProductID, ProductName,
 UnitPrice,UnitsInStock,UnitPrice*UnitsInStock as StockValue
 From Products
 
-Select ProductID as ����, ProductName as �Թ���,
-�ӹǹ�Թ��ҷ����� =UnitsInStock + UnitsOnOrder,
-�ش��觫��� = ReorderLevel
+Select ProductID as ÃËÑÊ, ProductName as ÊÔ¹¤éÒ,
+¨Ó¹Ç¹ÊÔ¹¤éÒ·Ñé§ËÁ´ =UnitsInStock + UnitsOnOrder,
+¨Ø´ÊÑè§«×éÍ = ReorderLevel
 from Products
 where (UnitsInStock+UnitsOnOrder) < ReorderLevel
 
@@ -28,7 +29,7 @@ Select EmployeeID,FirstName,BirthDate,DATEDIFF(YEAR,BirthDate,'2024-12-31') Age,
 	HireDate, DATEDIFF(YEAR,HireDate,GETDATE()) YearInOffice
 from Employees
 
-select count(*)As �ӹǹ�Թ���,count(ProductID), count(productName),count(UnitPrice)
+select count(*)As ¨Ó¹Ç¹ÊÔ¹¤éÒ,count(ProductID), count(productName),count(UnitPrice)
 from Products where UnitsInStock<15
 
 select *
@@ -81,4 +82,5 @@ select top 1 orderID, sum(UnitPrice*Quantity*(1-Discount)) as total
 from [Order Details] group by OrderID Order by total desc
 
 select top 5 orderID, sum(UnitPrice*Quantity*(1-Discount)) as total
+
 from [Order Details] group by OrderID Order by total asc
