@@ -138,12 +138,153 @@ WHERE o.OrderDate >= '1996-10-01' AND o.OrderDate < '1997-01-01'
 GROUP BY e.EmployeeID, e.FirstName, e.LastName
 ORDER BY TotalSales DESC;
 -- 11.  จงแสดงชื่อพนักงาน และแสดงยอดขายรวมทั้งหมด ของสินค้าที่เป็นประเภท Beverage ที่ส่งไปยังประเทศ ญี่ปุ่น
+SELECT
+e.EmployeeID,
+e.FirstName + ' ' + e.LastName AS EmployeeName,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS TotalSalesJapanBeverages
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+JOIN Categories c ON p.CategoryID = c.CategoryID
+JOIN Employees e ON o.EmployeeID = e.EmployeeID
+WHERE c.CategoryName = 'Beverages'
+  AND o.ShipCountry = 'Japan'
+GROUP BY e.EmployeeID, e.FirstName, e.LastName
+ORDER BY TotalSalesJapanBeverages DESC;
 -- 12.  แสดงรหัสบริษัทตัวแทนจำหน่าย ชื่อบริษัทตัวแทนจำหน่าย ชื่อผู้ติดต่อ เบอร์โทร ชื่อสินค้าที่ขาย เฉพาะประเภท Seafood ยอดรวมที่ขายได้แต่ละชนิด แสดงผลเป็นทศนิยม 4 ตำแหน่ง เรียงจาก มากไปน้อย 10 อันดับแรก
+SELECT TOP 10
+sup.SupplierID,
+sup.CompanyName AS SupplierCompany,
+sup.ContactName,
+sup.Phone,
+p.ProductID,
+p.ProductName,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS TotalSalesSeafood
+FROM Suppliers sup
+JOIN Products p ON sup.SupplierID = p.SupplierID
+JOIN Categories c ON p.CategoryID = c.CategoryID
+JOIN [Order Details] od ON p.ProductID = od.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+WHERE c.CategoryName = 'Seafood'
+GROUP BY sup.SupplierID, sup.CompanyName, sup.ContactName, sup.Phone, p.ProductID, p.ProductName
+ORDER BY TotalSalesSeafood DESC;
 -- 13.  จงแสดงชื่อเต็มพนักงานทุกคน วันเกิด อายุเป็นปีและเดือน พร้อมด้วยชื่อหัวหน้า
+SELECT
+e.EmployeeID,
+e.FirstName + ' ' + e.LastName AS EmployeeName,
+e.BirthDate,
+DATEDIFF(year, e.BirthDate, GETDATE())- CASE 
+WHEN MONTH(e.BirthDate) > MONTH(GETDATE())
+OR (MONTH(e.BirthDate) = MONTH(GETDATE()) AND DAY(e.BirthDate) > DAY(GETDATE()))
+THEN 1 ELSE 0 END AS AgeYears,
+(DATEDIFF(month, e.BirthDate, GETDATE())
+- (DATEDIFF(year, e.BirthDate, GETDATE())* 12+ CASE 
+WHEN MONTH(e.BirthDate) > MONTH(GETDATE())
+OR (MONTH(e.BirthDate) = MONTH(GETDATE()) AND DAY(e.BirthDate) > DAY(GETDATE()))
+THEN -12 ELSE 0 END)) AS AgeMonths,m.FirstName + ' ' + m.LastName AS ManagerName
+FROM Employees e
+LEFT JOIN Employees m ON e.ReportsTo = m.EmployeeID
+ORDER BY e.EmployeeID;
 -- 14.  จงแสดงชื่อบริษัทลูกค้าที่อยู่ในประเทศ USA และแสดงยอดเงินการซื้อสินค้าแต่ละประเภทสินค้า
+SELECT
+c.CustomerID,
+c.CompanyName,
+cat.CategoryName,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS TotalByCategory
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+JOIN Categories cat ON p.CategoryID = cat.CategoryID
+WHERE c.Country = 'USA'
+GROUP BY c.CustomerID, c.CompanyName, cat.CategoryName
+ORDER BY c.CompanyName, cat.CategoryName;
 -- 15.  แสดงข้อมูลบริษัทผู้จำหน่าย ชื่อบริษัท ชื่อสินค้าที่บริษัทนั้นจำหน่าย จำนวนสินค้าทั้งหมดที่ขายได้และราคาเฉลี่ยของสินค้าที่ขายไปแต่ละรายการ แสดงผลตัวเลขเป็นทศนิยม 4 ตำแหน่ง
+SELECT
+sup.SupplierID,
+sup.CompanyName,
+p.ProductID,
+p.ProductName,
+CAST(SUM(od.Quantity) AS DECIMAL(18,4)) AS TotalUnitsSold,
+CAST(AVG(od.UnitPrice * (1 - od.Discount)) AS DECIMAL(18,4)) AS AvgUnitPriceSold
+FROM Suppliers sup
+JOIN Products p ON sup.SupplierID = p.SupplierID
+JOIN [Order Details] od ON p.ProductID = od.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+GROUP BY sup.SupplierID, sup.CompanyName, p.ProductID, p.ProductName
+ORDER BY sup.CompanyName, p.ProductName;
 -- 16.  ต้องการชื่อบริษัทผู้ผลิต ชื่อผู้ต่อต่อ เบอร์โทร เบอร์แฟกซ์ เฉพาะผู้ผลิตที่อยู่ประเทศ ญี่ปุ่น พร้อมทั้งชื่อสินค้า และจำนวนที่ขายได้ทั้งหมด หลังจาก 1 มกราคม 2541
+SELECT
+sup.SupplierID,
+sup.CompanyName,
+sup.ContactName,
+sup.Phone,
+sup.Fax,
+p.ProductID,
+p.ProductName,
+CAST(SUM(od.Quantity) AS DECIMAL(18,4)) AS TotalUnitsAfter1998
+FROM Suppliers sup
+JOIN Products p ON sup.SupplierID = p.SupplierID
+JOIN [Order Details] od ON p.ProductID = od.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+WHERE sup.Country = 'Japan'
+AND o.OrderDate > '1998-01-01'
+GROUP BY sup.SupplierID, sup.CompanyName, sup.ContactName, sup.Phone, sup.Fax, p.ProductID, p.ProductName
+ORDER BY TotalUnitsAfter1998 DESC;
 -- 17.  แสดงชื่อบริษัทขนส่งสินค้า เบอร์โทรศัพท์ จำนวนรายการสั่งซื้อที่ส่งของไปเฉพาะรายการที่ส่งไปให้ลูกค้า ประเทศ USA และ Canada แสดงค่าขนส่งโดยรวมด้วย
+SELECT
+sh.ShipperID,
+sh.CompanyName AS ShipperCompany,
+sh.Phone,
+COUNT(DISTINCT o.OrderID) AS OrdersSent,
+CAST(SUM(o.Freight) AS DECIMAL(18,4)) AS TotalFreight
+FROM Orders o
+JOIN Shippers sh ON o.ShipVia = sh.ShipperID
+WHERE o.ShipCountry IN ('USA', 'Canada')
+GROUP BY sh.ShipperID, sh.CompanyName, sh.Phone
+ORDER BY OrdersSent DESC;
 -- 18.  ต้องการข้อมูลรายชื่อบริษัทลูกค้า ชื่อผู้ติดต่อ เบอร์โทรศัพท์ เบอร์แฟกซ์ ของลูกค้าที่ซื้อสินค้าประเภท Seafood แสดงเฉพาะลูกค้าที่มีเบอร์แฟกซ์เท่านั้น
+SELECT DISTINCT
+c.CustomerID,
+c.CompanyName,
+c.ContactName,
+c.Phone,
+c.Fax
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+JOIN Categories cat ON p.CategoryID = cat.CategoryID
+WHERE cat.CategoryName = 'Seafood'
+AND c.Fax IS NOT NULL
+ORDER BY c.CompanyName;
 -- 19.  จงแสดงชื่อเต็มของพนักงาน  วันเริ่มงาน (รูปแบบ 105) อายุงานเป็นปี เป็นเดือน ยอดขายรวม เฉพาะสินค้าประเภท Condiment ในปี 2540
+SELECT e.EmployeeID, e.FirstName + ' ' + e.LastName AS EmployeeName,
+CONVERT(varchar(10), e.HireDate, 105) AS HireDateFormatted,
+DATEDIFF(year, e.HireDate, '1997-12-31')- CASE 
+WHEN MONTH(e.HireDate) > MONTH('1997-12-31')
+OR (MONTH(e.HireDate) = MONTH('1997-12-31') AND DAY(e.HireDate) > DAY('1997-12-31'))
+THEN 1 ELSE 0 END AS YearsOfService,
+(DATEDIFF(month, e.HireDate, '1997-12-31')- (DATEDIFF(year, e.HireDate, '1997-12-31') * 12+ CASE 
+WHEN MONTH(e.HireDate) > MONTH('1997-12-31')
+OR (MONTH(e.HireDate) = MONTH('1997-12-31') AND DAY(e.HireDate) > DAY('1997-12-31'))
+THEN -12 ELSE 0 END)) AS MonthsOfService,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS TotalSalesCondiment1997
+FROM Employees e
+JOIN Orders o ON e.EmployeeID = o.EmployeeID
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+JOIN Categories cat ON p.CategoryID = cat.CategoryID
+WHERE cat.CategoryName = 'Condiments'
+AND o.OrderDate >= '1997-01-01' AND o.OrderDate < '1998-01-01'
+GROUP BY e.EmployeeID, e.FirstName, e.LastName, e.HireDate
+ORDER BY TotalSalesCondiment1997 DESC;
 -- 20.  จงแสดงหมายเลขใบสั่งซื้อ  วันที่สั่งซื้อ(รูปแบบ 105) ยอดขายรวมทั้งหมด ในแต่ละใบสั่งซื้อ โดยแสดงเฉพาะ ใบสั่งซื้อที่มียอดจำหน่ายสูงสุด 10 อันดับแรก
+SELECT TOP 10
+o.OrderID,
+CONVERT(varchar(10), o.OrderDate, 105) AS OrderDateFormatted,
+CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,4)) AS OrderTotal
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+GROUP BY o.OrderID, o.OrderDate
+ORDER BY OrderTotal DESC;
