@@ -1,4 +1,4 @@
-//ชลรวัตร ทองอยู่เลิศ 67040233126
+--ชลรวัตร ทองอยู่เลิศ 67040233126
 Select ProductID, ProductName,
 UnitPrice,UnitsInStock,UnitPrice*UnitsInStock as StockValue
 From Products
@@ -84,3 +84,4 @@ from [Order Details] group by OrderID Order by total desc
 select top 5 orderID, sum(UnitPrice*Quantity*(1-Discount)) as total
 
 from [Order Details] group by OrderID Order by total asc
+
